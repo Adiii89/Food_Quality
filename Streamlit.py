@@ -42,10 +42,10 @@ def main():
          st.header('Introduction ', divider='rainbow')
          with st.container():
 
-             st.write(
+           st.write(
                  "Food quality and safety are paramount concerns in the food industry, particularly in storage warehouses where large quantities of perishable goods are stored. Traditional monitoring methods often rely on manual inspection, which can be time-consuming and prone to errors. To address these challenges, the implementation of automated systems utilizing advanced technologies such as deep learning has gained prominence.")
 
-         st.image('C:/Users/admin/PycharmProjects/pythonProject1/Food_Quality/Images12/ids-nxt-industrial-camera-artificial-intelligence-apple-detection-e4d34ebc.jpg')
+         st.image('Food_Quality/Images12/ids-nxt-industrial-camera-artificial-intelligence-apple-detection-e4d34ebc.jpg')
 
          st.markdown(
              """
@@ -81,7 +81,7 @@ def main():
                   "YOLOv8's high accuracy and efficiency ensure reliable detection of quality issues while minimizing computational resources. ")
          st.write(" **3.Accessibility:** "
                   "The web interface allows users to remotely access monitoring data, facilitating seamless oversight of multiple storage locations.")
-         st.image('C:/Users/admin/PycharmProjects/pythonProject1/Food_Quality/Images12/banner-integrations.png')
+         st.image('Food_Quality/Images12/banner-integrations.png')
          st.header('Conclusion', divider='rainbow')
          st.write("The integration of YOLOv8 in a Food Quality Monitoring System offers significant advancements in ensuring the safety and quality of stored food products. By automating the monitoring process and providing real-time insights, this system enhances efficiency, reduces costs, and mitigates risks associated with food storage operations."
                   "Future enhancements may involve incorporating additional sensors for multi-modal data fusion, expanding the model's capabilities to recognize a broader range of quality attributes, and integrating predictive analytics for proactive quality management.")
@@ -103,7 +103,7 @@ def main():
              margin-left:-300px;
              }
              </style>
-             """,
+              """,
              unsafe_allow_html=True,
 
          )
@@ -146,7 +146,69 @@ def main():
          tffile = tempfile.NamedTemporaryFile(suffix='.mp4', delete=False)
          if not video_file_buffer:
              if use_webcam:
-                 tffile.name=0
+                 cap = cv2.VideoCapture(0)
+                 cap.set(3, 1280)
+                 cap.set(4, 720)
+
+                 model = YOLO("C:/Users/admin/PycharmProjects/pythonProject1/Food_Quality/Final.pt")
+                 classNames =   [
+                    "Apple",
+                    "Banana",
+                    "Bellpepper",
+                    "Bread",
+                    "Broccoli",
+                    "Cabbage",
+                    "Carrot",
+                    "Cauliflower",
+                    "Coriander",
+                    "Egg",
+                    "Grapes",
+                    "Kiwi",
+                    "MBanana",
+                    "Orange",
+                    "Papaya",
+                    "Pineapple",
+                    "Pomegranate",
+                    "Potato",
+                    "RApple",
+                    "RBanana",
+                    "RBread",
+                    "RCauliflower",
+                    "RCoriander",
+                    "RGrapes",
+                    "RGuava",
+                    "ROrange",
+                    "RPapaya",
+                    "RTomato",
+                    "Strawberry",
+                    "Tomato"
+                                ]
+                 while True:
+                     success, img = cap.read()
+                     results = model(img, stream=True)
+                     for r in results:
+                         boxes = r.boxes
+                         for box in boxes:
+                             # Bounding Box Code
+                             x1, y1, x2, y2 = box.xyxy[0]
+                             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                             # cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                             w, h = x2 - x1, y2 - y1
+                             cvzone.cornerRect(img, (x1, y1, w, h))
+
+                             # confidence Value Code
+                             conf = math.ceil((box.conf[0] * 100)) / 100
+                             print(conf)
+
+                             # Class Name
+                             cls = int(box.cls[0])
+
+                             cvzone.putTextRect(img, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=0.9,
+                                                thickness=1)
+                     cv2.imshow("Image", img)
+                     cv2.waitKey(1)
+
+
              else:
                  vid =cv2.VideoCapture(DEMO_VIDEO)
                  tffile.name=DEMO_VIDEO
