@@ -87,7 +87,7 @@ def main():
                   "Future enhancements may involve incorporating additional sensors for multi-modal data fusion, expanding the model's capabilities to recognize a broader range of quality attributes, and integrating predictive analytics for proactive quality management.")
 
      elif app_mode=='Run on Image':
-         
+
          confidence=st.sidebar.subheader('')
 
 
