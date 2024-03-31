@@ -45,7 +45,7 @@ def main():
            st.write(
                  "Food quality and safety are paramount concerns in the food industry, particularly in storage warehouses where large quantities of perishable goods are stored. Traditional monitoring methods often rely on manual inspection, which can be time-consuming and prone to errors. To address these challenges, the implementation of automated systems utilizing advanced technologies such as deep learning has gained prominence.")
 
-         st.image('Food_Quality/Images12/ids-nxt-industrial-camera-artificial-intelligence-apple-detection-e4d34ebc.jpg')
+         st.image('Food_Quality/Images12/1.jpg')
 
          st.markdown(
              """
@@ -87,9 +87,9 @@ def main():
                   "Future enhancements may involve incorporating additional sensors for multi-modal data fusion, expanding the model's capabilities to recognize a broader range of quality attributes, and integrating predictive analytics for proactive quality management.")
 
      elif app_mode=='Run on Image':
-         st.sidebar.markdown('---')
-         confidence=st.sidebar.slider('Confidence', min_value=0.0, max_value=1.0)
-         st.sidebar.markdown('---')
+         
+         confidence=st.sidebar.subheader('')
+
 
          st.markdown(
              """
