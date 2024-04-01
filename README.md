@@ -1,4 +1,4 @@
-# Food Quality Monitoring System in Food Storage Warehouse
+# Food Quality Monitoring System
 
 ## Index
 
