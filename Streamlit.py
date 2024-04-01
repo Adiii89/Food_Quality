@@ -49,7 +49,7 @@ def main():
            st.write(
                  "Food quality and safety are paramount concerns in the food industry, particularly in storage warehouses where large quantities of perishable goods are stored. Traditional monitoring methods often rely on manual inspection, which can be time-consuming and prone to errors. To address these challenges, the implementation of automated systems utilizing advanced technologies such as deep learning has gained prominence.")
 
-         st.image("Food_Quality/Images12/1.jpg")
+         #st.image("Food_Quality/Images12/1.jpg")
 
          st.markdown(
              """
@@ -85,7 +85,7 @@ def main():
                   "YOLOv8's high accuracy and efficiency ensure reliable detection of quality issues while minimizing computational resources. ")
          st.write(" **3.Accessibility:** "
                   "The web interface allows users to remotely access monitoring data, facilitating seamless oversight of multiple storage locations.")
-         st.image('Food_Quality/Images12/banner-integrations.png')
+         #st.image('Food_Quality/Images12/banner-integrations.png')
          st.header('Conclusion', divider='rainbow')
          st.write("The integration of YOLOv8 in a Food Quality Monitoring System offers significant advancements in ensuring the safety and quality of stored food products. By automating the monitoring process and providing real-time insights, this system enhances efficiency, reduces costs, and mitigates risks associated with food storage operations."
                   "Future enhancements may involve incorporating additional sensors for multi-modal data fusion, expanding the model's capabilities to recognize a broader range of quality attributes, and integrating predictive analytics for proactive quality management.")
@@ -176,7 +176,7 @@ def main():
                  cvzone.putTextRect(image, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=0.9,
                                     thickness=1)
          st.subheader('Output Image')
-         st.image(image, channels='BGR', use_column_width=True)
+         st.image(image, use_column_width=True)
 
      elif app_mode == 'Run on Video':
          st.markdown(
