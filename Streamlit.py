@@ -1,10 +1,14 @@
 import cv2
 import numpy as np
 import streamlit as st
-from VidEo_Streamlit import *
+
+import cvzone
 from PIL import Image
 import base64
 import tempfile
+import math
+import time
+from ultralytics import YOLO
 def main():
      st.title("Food Quality Monitoring System in Food Storage warehouse ")
      st.sidebar.title("Settings")
@@ -45,7 +49,7 @@ def main():
            st.write(
                  "Food quality and safety are paramount concerns in the food industry, particularly in storage warehouses where large quantities of perishable goods are stored. Traditional monitoring methods often rely on manual inspection, which can be time-consuming and prone to errors. To address these challenges, the implementation of automated systems utilizing advanced technologies such as deep learning has gained prominence.")
 
-         st.image('Food_Quality/Images12/1.jpg')
+         st.image("Food_Quality/Images12/1.jpg")
 
          st.markdown(
              """
@@ -118,7 +122,61 @@ def main():
              image = np.array(Image.open(DEMO_IMAGE))
          st.sidebar.text('Original Image')
          st.sidebar.image(image)
-         load_yolov8_process_each_Image(img, confidence, st)
+         model = YOLO("Food_Quality/Final.pt")
+         classNames = [
+             "Apple",
+             "Banana",
+             "Bellpepper",
+             "Bread",
+             "Broccoli",
+             "Cabbage",
+             "Carrot",
+             "Cauliflower",
+             "Coriander",
+             "Egg",
+             "Grapes",
+             "Kiwi",
+             "MBanana",
+             "Orange",
+             "Papaya",
+             "Pineapple",
+             "Pomegranate",
+             "Potato",
+             "RApple",
+             "RBanana",
+             "RBread",
+             "RCauliflower",
+             "RCoriander",
+             "RGrapes",
+             "RGuava",
+             "ROrange",
+             "RPapaya",
+             "RTomato",
+             "Strawberry",
+             "Tomato"
+         ]
+
+         results = model(image, stream=True)
+         for r in results:
+             boxes = r.boxes
+             for box in boxes:
+                 # Bounding Box Code
+                 x1, y1, x2, y2 = box.xyxy[0]
+                 x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                 # cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                 w, h = x2 - x1, y2 - y1
+                 cvzone.cornerRect(image, (x1, y1, w, h))
+
+                 # confidence Value Code
+                 conf = math.ceil((box.conf[0] * 100)) / 100
+
+                 # Class Name
+                 cls = int(box.cls[0])
+
+                 cvzone.putTextRect(image, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=0.9,
+                                    thickness=1)
+         st.subheader('Output Image')
+         st.image(image, channels='BGR', use_column_width=True)
 
      elif app_mode == 'Run on Video':
          st.markdown(
@@ -235,8 +293,77 @@ def main():
              st.markdown("**Height**")
              kpi3_text=st.markdown("0")
          st.markdown(" ", unsafe_allow_html=True)
-         load_yolov8_process_each_Frame(tffile.name, kpi_text, kpi2_text, kpi3_text, stframe)
+         cap = cv2.VideoCapture(tffile)
+         width = cap.set(3, 1280)
+         height = cap.set(4, 720)
 
+         model = YOLO("Food_Quality/Final.pt")
+         prev_time = 0
+         classNames = [
+             "Apple",
+             "Banana",
+             "Bellpepper",
+             "Bread",
+             "Broccoli",
+             "Cabbage",
+             "Carrot",
+             "Cauliflower",
+             "Coriander",
+             "Egg",
+             "Grapes",
+             "Kiwi",
+             "MBanana",
+             "Orange",
+             "Papaya",
+             "Pineapple",
+             "Pomegranate",
+             "Potato",
+             "RApple",
+             "RBanana",
+             "RBread",
+             "RCauliflower",
+             "RCoriander",
+             "RGrapes",
+             "RGuava",
+             "ROrange",
+             "RPapaya",
+             "RTomato",
+             "Strawberry",
+             "Tomato"
+         ]
+         while True:
+             success, img = cap.read()
+             results = model(img, stream=True)
+             for r in results:
+                 boxes = r.boxes
+                 for box in boxes:
+                     # Bounding Box Code
+                     x1, y1, x2, y2 = box.xyxy[0]
+                     x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                     # cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                     w, h = x2 - x1, y2 - y1
+                     cvzone.cornerRect(img, (x1, y1, w, h))
+
+                     # confidence Value Code
+                     conf = math.ceil((box.conf[0] * 100)) / 100
+                     print(conf)
+
+                     # Class Name
+                     cls = int(box.cls[0])
+
+                     cvzone.putTextRect(img, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=0.9,
+                                        thickness=1)
+                 stframe.image(img, channels='BGR', use_column_width=True)
+                 current_time = time.time()
+                 fps = 1 / (current_time - prev_time)
+
+                 prev_time = current_time
+                 kpi_text.write(f"<h1 style='text-align:center; color:red;'>{'{:.1f}'.format(fps)}</h1>",
+                                unsafe_allow_html=True)
+                 kpi2_text.write(f"<h1 style='text-align:center; color:red;'>{'{:.1f}'.format(width)}</h1>",
+                                 unsafe_allow_html=True)
+                 kpi3_text.write(f"<h1 style='text-align:center; color:red;'>{'{:.1f}'.format(height)}</h1>",
+                                 unsafe_allow_html=True)
 
 
 if __name__ == '__main__':
