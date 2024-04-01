@@ -112,71 +112,70 @@ def main():
 
          )
          img_file_buffer = st.sidebar.file_uploader('Upload an Image', type=["jpg", "jpeg", "png"])
-         DEMO_IMAGE = "C:/Users/admin/PycharmProjects/pythonProject1/Food_Quality/Images12/33.jpg"
+         #DEMO_IMAGE = "C:/Users/admin/PycharmProjects/pythonProject1/Food_Quality/Images12/33.jpg"
 
-         if img_file_buffer is not None:
+         if img_file_buffer is None:
+             st.write('You have not uploaded any file yet!!')
+         else:
              img = cv2.imdecode(np.fromstring(img_file_buffer.read(), np.uint8), 1)
              image = np.array(Image.open(img_file_buffer))
-         else:
-             img = cv2.imread(DEMO_IMAGE)
-             image = np.array(Image.open(DEMO_IMAGE))
-         st.sidebar.text('Original Image')
-         st.sidebar.image(image)
-         model = YOLO("Food_Quality/Final.pt")
-         classNames = [
-             "Apple",
-             "Banana",
-             "Bellpepper",
-             "Bread",
-             "Broccoli",
-             "Cabbage",
-             "Carrot",
-             "Cauliflower",
-             "Coriander",
-             "Egg",
-             "Grapes",
-             "Kiwi",
-             "MBanana",
-             "Orange",
-             "Papaya",
-             "Pineapple",
-             "Pomegranate",
-             "Potato",
-             "RApple",
-             "RBanana",
-             "RBread",
-             "RCauliflower",
-             "RCoriander",
-             "RGrapes",
-             "RGuava",
-             "ROrange",
-             "RPapaya",
-             "RTomato",
-             "Strawberry",
-             "Tomato"
-         ]
+             st.sidebar.text('Original Image')
+             st.sidebar.image(image)
+             model = YOLO("Food_Quality/Final.pt")
+             classNames = [
+                 "Apple",
+                 "Banana",
+                 "Bellpepper",
+                 "Bread",
+                 "Broccoli",
+                 "Cabbage",
+                 "Carrot",
+                 "Cauliflower",
+                 "Coriander",
+                 "Egg",
+                 "Grapes",
+                 "Kiwi",
+                 "MBanana",
+                 "Orange",
+                 "Papaya",
+                 "Pineapple",
+                 "Pomegranate",
+                 "Potato",
+                 "RApple",
+                 "RBanana",
+                 "RBread",
+                 "RCauliflower",
+                 "RCoriander",
+                 "RGrapes",
+                 "RGuava",
+                 "ROrange",
+                 "RPapaya",
+                 "RTomato",
+                 "Strawberry",
+                 "Tomato"
+             ]
 
-         results = model(image, stream=True)
-         for r in results:
-             boxes = r.boxes
-             for box in boxes:
-                 # Bounding Box Code
-                 x1, y1, x2, y2 = box.xyxy[0]
-                 x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-                 # cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
-                 w, h = x2 - x1, y2 - y1
-                 cvzone.cornerRect(image, (x1, y1, w, h))
+             results = model(image, stream=True)
+             for r in results:
+                 boxes = r.boxes
+                 for box in boxes:
+                     # Bounding Box Code
+                     x1, y1, x2, y2 = box.xyxy[0]
+                     x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                     # cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                     w, h = x2 - x1, y2 - y1
+                     cvzone.cornerRect(image, (x1, y1, w, h))
 
-                 # confidence Value Code
-                 conf = math.ceil((box.conf[0] * 100)) / 100
+                     # confidence Value Code
+                     conf = math.ceil((box.conf[0] * 100)) / 100
 
-                 # Class Name
-                 cls = int(box.cls[0])
+                     # Class Name
+                     cls = int(box.cls[0])
 
-                 cvzone.putTextRect(image, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=0.9,
-                                    thickness=1)
-         st.subheader('Output Image')
-         st.image(image, use_column_width=True)
+                     cvzone.putTextRect(image, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=0.9,
+                                        thickness=1)
+             st.subheader('Output Image')
+             st.image(image, use_column_width=True)
 
      elif app_mode == 'Run on Video':
          st.markdown(
@@ -199,172 +198,176 @@ def main():
          use_webcam=st.sidebar.checkbox('Use Webcam')
          st.sidebar.markdown('---')
          video_file_buffer=st.sidebar.file_uploader('Upload a Video', type=["mp4","avi", "asf", "mov", "webm"])
-         DEMO_VIDEO='C:/Users/admin/PycharmProjects/pythonProject1/Food_Quality/Videos/video1.webm'
+         #DEMO_VIDEO='C:/Users/admin/PycharmProjects/pythonProject1/Food_Quality/Videos/video1.webm'
 
          tffile = tempfile.NamedTemporaryFile(suffix='.mp4', delete=False)
-         if not video_file_buffer:
-             if use_webcam:
-                 cap = cv2.VideoCapture(0)
-                 cap.set(3, 1280)
-                 cap.set(4, 720)
+         if  video_file_buffer is None:
+             st.write('You have not uploaded any file yet')
+             # vid =cv2.VideoCapture(DEMO_VIDEO)
+             # tffile.name=DEMO_VIDEO
+             # demo_vid=open(tffile.name, 'rb')
+             # demo_bytes=demo_vid.read()
+             # st.sidebar.text('Input Video')
+             # st.sidebar.video(demo_bytes)
 
-                 model = YOLO("C:/Users/admin/PycharmProjects/pythonProject1/Food_Quality/Final.pt")
-                 classNames =   [
-                    "Apple",
-                    "Banana",
-                    "Bellpepper",
-                    "Bread",
-                    "Broccoli",
-                    "Cabbage",
-                    "Carrot",
-                    "Cauliflower",
-                    "Coriander",
-                    "Egg",
-                    "Grapes",
-                    "Kiwi",
-                    "MBanana",
-                    "Orange",
-                    "Papaya",
-                    "Pineapple",
-                    "Pomegranate",
-                    "Potato",
-                    "RApple",
-                    "RBanana",
-                    "RBread",
-                    "RCauliflower",
-                    "RCoriander",
-                    "RGrapes",
-                    "RGuava",
-                    "ROrange",
-                    "RPapaya",
-                    "RTomato",
-                    "Strawberry",
-                    "Tomato"
-                                ]
-                 while True:
-                     success, img = cap.read()
-                     results = model(img, stream=True)
-                     for r in results:
-                         boxes = r.boxes
-                         for box in boxes:
-                             # Bounding Box Code
-                             x1, y1, x2, y2 = box.xyxy[0]
-                             x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-                             # cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
-                             w, h = x2 - x1, y2 - y1
-                             cvzone.cornerRect(img, (x1, y1, w, h))
-
-                             # confidence Value Code
-                             conf = math.ceil((box.conf[0] * 100)) / 100
-                             print(conf)
-
-                             # Class Name
-                             cls = int(box.cls[0])
-
-                             cvzone.putTextRect(img, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=0.9,
-                                                thickness=1)
-                     cv2.imshow("Image", img)
-                     cv2.waitKey(1)
-
-
-             else:
-                 vid =cv2.VideoCapture(DEMO_VIDEO)
-                 tffile.name=DEMO_VIDEO
-                 demo_vid=open(tffile.name, 'rb')
-                 demo_bytes=demo_vid.read()
-                 st.sidebar.text('Input Video')
-                 st.sidebar.video(demo_bytes)
          else:
-             tffile.write(video_file_buffer.read())
-             demo_vid = open(tffile.name, 'rb')
-             demo_bytes = demo_vid.read()
-             st.sidebar.text('Input Video')
-             st.sidebar.video(demo_bytes)
-         stframe=st.empty()
-         st.markdown(" ", unsafe_allow_html=True)
-         kpi1, kpi2, kpi3=st.columns(3)
-         with kpi1:
-             st.markdown("**Frame Rate**")
-             kpi_text=st.markdown("0")
-         with kpi2:
-             st.markdown("**Width**")
-             kpi2_text=st.markdown("0")
-         with kpi3:
-             st.markdown("**Height**")
-             kpi3_text=st.markdown("0")
-         st.markdown(" ", unsafe_allow_html=True)
-         cap = cv2.VideoCapture(tffile)
-         width = cap.set(3, 1280)
-         height = cap.set(4, 720)
+                 if use_webcam:
+                     cap = cv2.VideoCapture(0)
+                     cap.set(3, 1280)
+                     cap.set(4, 720)
 
-         model = YOLO("Food_Quality/Final.pt")
-         prev_time = 0
-         classNames = [
-             "Apple",
-             "Banana",
-             "Bellpepper",
-             "Bread",
-             "Broccoli",
-             "Cabbage",
-             "Carrot",
-             "Cauliflower",
-             "Coriander",
-             "Egg",
-             "Grapes",
-             "Kiwi",
-             "MBanana",
-             "Orange",
-             "Papaya",
-             "Pineapple",
-             "Pomegranate",
-             "Potato",
-             "RApple",
-             "RBanana",
-             "RBread",
-             "RCauliflower",
-             "RCoriander",
-             "RGrapes",
-             "RGuava",
-             "ROrange",
-             "RPapaya",
-             "RTomato",
-             "Strawberry",
-             "Tomato"
-         ]
-         while True:
-             success, img = cap.read()
-             results = model(img, stream=True)
-             for r in results:
-                 boxes = r.boxes
-                 for box in boxes:
-                     # Bounding Box Code
-                     x1, y1, x2, y2 = box.xyxy[0]
-                     x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-                     # cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
-                     w, h = x2 - x1, y2 - y1
-                     cvzone.cornerRect(img, (x1, y1, w, h))
+                     model = YOLO("C:/Users/admin/PycharmProjects/pythonProject1/Food_Quality/Final.pt")
+                     classNames =   [
+                        "Apple",
+                        "Banana",
+                        "Bellpepper",
+                        "Bread",
+                        "Broccoli",
+                        "Cabbage",
+                        "Carrot",
+                        "Cauliflower",
+                        "Coriander",
+                        "Egg",
+                        "Grapes",
+                        "Kiwi",
+                        "MBanana",
+                        "Orange",
+                        "Papaya",
+                        "Pineapple",
+                        "Pomegranate",
+                        "Potato",
+                        "RApple",
+                        "RBanana",
+                        "RBread",
+                        "RCauliflower",
+                        "RCoriander",
+                        "RGrapes",
+                        "RGuava",
+                        "ROrange",
+                        "RPapaya",
+                        "RTomato",
+                        "Strawberry",
+                        "Tomato"
+                                    ]
+                     while True:
+                         success, img = cap.read()
+                         results = model(img, stream=True)
+                         for r in results:
+                             boxes = r.boxes
+                             for box in boxes:
+                                 # Bounding Box Code
+                                 x1, y1, x2, y2 = box.xyxy[0]
+                                 x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                                 # cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                                 w, h = x2 - x1, y2 - y1
+                                 cvzone.cornerRect(img, (x1, y1, w, h))
 
-                     # confidence Value Code
-                     conf = math.ceil((box.conf[0] * 100)) / 100
-                     print(conf)
+                                 # confidence Value Code
+                                 conf = math.ceil((box.conf[0] * 100)) / 100
+                                 print(conf)
 
-                     # Class Name
-                     cls = int(box.cls[0])
+                                 # Class Name
+                                 cls = int(box.cls[0])
 
-                     cvzone.putTextRect(img, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=0.9,
-                                        thickness=1)
-                 stframe.image(img, channels='BGR', use_column_width=True)
-                 current_time = time.time()
-                 fps = 1 / (current_time - prev_time)
+                                 cvzone.putTextRect(img, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=0.9,
+                                                    thickness=1)
+                         cv2.imshow("Image", img)
+                         cv2.waitKey(1)
 
-                 prev_time = current_time
-                 kpi_text.write(f"<h1 style='text-align:center; color:red;'>{'{:.1f}'.format(fps)}</h1>",
-                                unsafe_allow_html=True)
-                 kpi2_text.write(f"<h1 style='text-align:center; color:red;'>{'{:.1f}'.format(width)}</h1>",
-                                 unsafe_allow_html=True)
-                 kpi3_text.write(f"<h1 style='text-align:center; color:red;'>{'{:.1f}'.format(height)}</h1>",
-                                 unsafe_allow_html=True)
 
+                 else:
+                     tffile.write(video_file_buffer.read())
+                     demo_vid = open(tffile.name, 'rb')
+                     demo_bytes = demo_vid.read()
+                     st.sidebar.text('Input Video')
+                     st.sidebar.video(demo_bytes)
+
+
+                     stframe=st.empty()
+                     st.markdown(" ", unsafe_allow_html=True)
+                     kpi1, kpi2, kpi3=st.columns(3)
+                     with kpi1:
+                         st.markdown("**Frame Rate**")
+                         kpi_text=st.markdown("0")
+                     with kpi2:
+                         st.markdown("**Width**")
+                         kpi2_text=st.markdown("0")
+                     with kpi3:
+                         st.markdown("**Height**")
+                         kpi3_text=st.markdown("0")
+                     st.markdown(" ", unsafe_allow_html=True)
+                     cap = cv2.VideoCapture(tffile.name)
+                     width = cap.set(3, 1280)
+                     height = cap.set(4, 720)
+
+                     model = YOLO("Food_Quality/Final.pt")
+                     prev_time = 0
+                     classNames = [
+                         "Apple",
+                         "Banana",
+                         "Bellpepper",
+                         "Bread",
+                         "Broccoli",
+                         "Cabbage",
+                         "Carrot",
+                         "Cauliflower",
+                         "Coriander",
+                         "Egg",
+                         "Grapes",
+                         "Kiwi",
+                         "MBanana",
+                         "Orange",
+                         "Papaya",
+                         "Pineapple",
+                         "Pomegranate",
+                         "Potato",
+                         "RApple",
+                         "RBanana",
+                         "RBread",
+                         "RCauliflower",
+                         "RCoriander",
+                         "RGrapes",
+                         "RGuava",
+                         "ROrange",
+                         "RPapaya",
+                         "RTomato",
+                         "Strawberry",
+                         "Tomato"
+                     ]
+                     while True:
+                         success, img = cap.read()
+                         results = model(img, stream=True)
+                         for r in results:
+                             boxes = r.boxes
+                             for box in boxes:
+                                 # Bounding Box Code
+                                 x1, y1, x2, y2 = box.xyxy[0]
+                                 x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
+                                 # cv2.rectangle(img, (x1, y1), (x2, y2), (255, 0, 255), 3)
+                                 w, h = x2 - x1, y2 - y1
+                                 cvzone.cornerRect(img, (x1, y1, w, h))
+
+                                 # confidence Value Code
+                                 conf = math.ceil((box.conf[0] * 100)) / 100
+                                 print(conf)
+
+                                 # Class Name
+                                 cls = int(box.cls[0])
+
+                                 cvzone.putTextRect(img, f'{classNames[cls]} {conf}', (max(0, x1), max(35, y1)), scale=0.9,
+                                                    thickness=1)
+                             stframe.image(img, channels='BGR', use_column_width=True)
+                             current_time = time.time()
+                             fps = 1 / (current_time - prev_time)
+
+                             prev_time = current_time
+                             kpi_text.write(f"<h1 style='text-align:center; color:red;'>{'{:.1f}'.format(fps)}</h1>",
+                                            unsafe_allow_html=True)
+                             kpi2_text.write(f"<h1 style='text-align:center; color:red;'>{'{:.1f}'.format(width)}</h1>",
+                                             unsafe_allow_html=True)
+                             kpi3_text.write(f"<h1 style='text-align:center; color:red;'>{'{:.1f}'.format(height)}</h1>",
+                                             unsafe_allow_html=True)
+                     st.write('You have not uploaded any file yet')
 
 if __name__ == '__main__':
     try:
